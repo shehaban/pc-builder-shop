@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Search, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CartSheet } from "@/components/cart-sheet"
+import { UserNav } from "@/components/user-nav"
 
 export function SiteHeader() {
   return (
@@ -41,6 +42,7 @@ export function SiteHeader() {
               <span className="sr-only">Search</span>
             </Button>
             <CartSheet />
+            <UserNav />
             <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Menu</span>
