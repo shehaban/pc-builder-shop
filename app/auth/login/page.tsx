@@ -5,7 +5,6 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -24,26 +23,24 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      const supabase = createClient()
-
-      console.log("[v0] Attempting login with email:", email)
-
-      const { data, error: loginError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       })
 
-      console.log("[v0] Login response:", { data, error: loginError })
+      const data = await response.json()
 
-      if (loginError) throw loginError
+      if (!response.ok) throw new Error(data.error || "Login failed")
 
-      // Check if user is admin
-      const isAdmin = data.user?.user_metadata?.is_admin === true
+      // Store user in localStorage
+      localStorage.setItem("user", JSON.stringify(data.user))
 
-      console.log("[v0] User logged in, isAdmin:", isAdmin)
+      // Dispatch auth change event
+      window.dispatchEvent(new Event('authChange'))
 
-      // Redirect based on user type
-      if (isAdmin) {
+      // Redirect based on user type (assuming admin check)
+      if (data.user.is_admin) {
         router.push("/admin")
       } else {
         router.push("/")

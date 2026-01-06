@@ -1,12 +1,23 @@
-import { createClient } from "@/lib/supabase/server"
 import { ProductForm } from "@/components/product-form"
 import { notFound } from "next/navigation"
+import fs from "fs/promises"
+import path from "path"
+
+async function getProduct(id: string) {
+  try {
+    const productsFile = path.join(process.cwd(), "database", "products.json")
+    const data = await fs.readFile(productsFile, "utf-8")
+    const products = JSON.parse(data)
+    return products.find((p: any) => p.id === id)
+  } catch (error) {
+    console.error("Product fetch error:", error)
+    return null
+  }
+}
 
 export default async function EditProductPage({ params }: { params: Promise<{ category: string; id: string }> }) {
   const { category, id } = await params
-  const supabase = await createClient()
-
-  const { data: product } = await supabase.from("products").select("*").eq("id", id).single()
+  const product = await getProduct(id)
 
   if (!product) {
     notFound()

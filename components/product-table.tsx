@@ -1,15 +1,14 @@
 "use client"
 
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Pencil, Trash2 } from "lucide-react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { ProductDialog } from "@/components/product-dialog"
 
 interface Product {
-  id: string
+  id: string | number
   name: string
   description: string | null
   price: number
@@ -20,9 +19,10 @@ interface Product {
 
 interface ProductTableProps {
   products: Product[]
+  onRefresh?: () => void
 }
 
-export function ProductTable({ products }: ProductTableProps) {
+export function ProductTable({ products, onRefresh }: ProductTableProps) {
   const router = useRouter()
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
@@ -30,16 +30,30 @@ export function ProductTable({ products }: ProductTableProps) {
     if (!confirm("Are you sure you want to delete this product?")) return
 
     setDeletingId(id)
-    const supabase = createClient()
 
     try {
-      const { error } = await supabase.from("products").delete().eq("id", id)
-      if (error) throw error
+      const response = await fetch(`/api/products/${id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete product")
+      }
+
       router.refresh()
     } catch (error) {
       alert("Failed to delete product")
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  const handleEditSuccess = async () => {
+    // This will be called from the parent component to refresh the data
+    if (onRefresh) {
+      await onRefresh()
+    } else {
+      router.refresh()
     }
   }
 
@@ -71,17 +85,22 @@ export function ProductTable({ products }: ProductTableProps) {
                 <TableCell>{product.subcategory || "-"}</TableCell>
                 <TableCell className="text-right">${product.price.toFixed(2)}</TableCell>
                 <TableCell className="text-right">{product.stock}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="outline" asChild>
-                      <Link href={`/admin/products/${product.category}/edit/${product.id}`}>
-                        <Pencil className="h-4 w-4" />
-                      </Link>
-                    </Button>
+                 <TableCell className="text-right">
+                   <div className="flex justify-end gap-2">
+                     <ProductDialog
+                       product={product}
+                       category={product.category}
+                       onSuccess={handleEditSuccess}
+                       trigger={
+                         <Button size="sm" variant="outline">
+                           <Pencil className="h-4 w-4" />
+                         </Button>
+                       }
+                     />
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleDelete(product.id)}
+                      onClick={() => handleDelete(String(product.id))}
                       disabled={deletingId === product.id}
                     >
                       <Trash2 className="h-4 w-4" />

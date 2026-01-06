@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/client"
-import { User, LogOut, Settings, ShieldCheck } from "lucide-react"
+import { User, LogOut, Settings, ShieldCheck, Package } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -18,41 +17,32 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 export function UserNav() {
   const [user, setUser] = useState<any>(null)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      setUser(user)
-      setIsAdmin(user?.user_metadata?.is_admin === true)
-      setLoading(false)
+    const checkUser = () => {
+      const storedUser = localStorage.getItem("user")
+      if (storedUser) {
+        setUser(JSON.parse(storedUser))
+      } else {
+        setUser(null)
+      }
     }
 
-    getUser()
+    checkUser()
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      setIsAdmin(session?.user?.user_metadata?.is_admin === true)
-    })
+    // Listen for auth changes
+    window.addEventListener('authChange', checkUser)
 
-    return () => subscription.unsubscribe()
-  }, [supabase.auth])
+    return () => window.removeEventListener('authChange', checkUser)
+  }, [])
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
+  const handleSignOut = () => {
+    localStorage.removeItem("user")
+    setUser(null)
+    window.dispatchEvent(new Event('authChange'))
     router.push("/")
     router.refresh()
-  }
-
-  if (loading) {
-    return <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
   }
 
   if (!user) {
@@ -69,7 +59,7 @@ export function UserNav() {
   }
 
   const initials =
-    user.user_metadata?.name
+    user.name
       ?.split(" ")
       .map((n: string) => n[0])
       .join("")
@@ -89,12 +79,12 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.user_metadata?.name || "User"}</p>
+            <p className="text-sm font-medium leading-none">{user.name || "User"}</p>
             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {isAdmin && (
+        {user.is_admin && (
           <>
             <DropdownMenuItem asChild>
               <Link href="/admin" className="cursor-pointer">
@@ -109,6 +99,12 @@ export function UserNav() {
           <Link href="/profile" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/orders" className="cursor-pointer">
+            <Package className="mr-2 h-4 w-4" />
+            <span>Orders</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

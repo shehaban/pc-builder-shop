@@ -5,7 +5,6 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -39,25 +38,15 @@ export default function SignupPage() {
     }
 
     try {
-      const supabase = createClient()
-
-      console.log("[v0] Attempting signup with email:", email)
-
-      const { data, error: signupError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name,
-            is_admin: false,
-          },
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || window.location.origin,
-        },
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name }),
       })
 
-      console.log("[v0] Signup response:", { data, error: signupError })
+      const data = await response.json()
 
-      if (signupError) throw signupError
+      if (!response.ok) throw new Error(data.error || "Signup failed")
 
       setSuccess(true)
       setTimeout(() => {
@@ -79,7 +68,7 @@ export default function SignupPage() {
           <CardHeader>
             <CardTitle className="text-2xl text-center">Success!</CardTitle>
             <CardDescription className="text-center">
-              Your account has been created. Check your email to verify your account.
+              Your account has been created. You can now sign in.
             </CardDescription>
           </CardHeader>
         </Card>

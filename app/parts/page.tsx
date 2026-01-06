@@ -1,78 +1,100 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { ProductCard } from "@/components/product-card"
 import { ProductFilters } from "@/components/product-filters"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SlidersHorizontal } from "lucide-react"
 
-const parts = [
-  {
-    id: "1",
-    name: "Intel Core i9-14900K Processor",
-    brand: "Intel",
-    price: 589,
-    rating: 4.9,
-    specs: ["24 cores", "5.8GHz boost", "LGA 1700"],
-    inStock: true,
-  },
-  {
-    id: "2",
-    name: "NVIDIA GeForce RTX 4090 Graphics Card",
-    brand: "NVIDIA",
-    price: 1599,
-    rating: 4.9,
-    specs: ["24GB GDDR6X", "16384 CUDA cores", "450W TDP"],
-    inStock: true,
-  },
-  {
-    id: "3",
-    name: "Corsair Vengeance DDR5 RAM 32GB",
-    brand: "Corsair",
-    price: 189,
-    rating: 4.7,
-    specs: ["32GB (2x16GB)", "6000MHz", "DDR5"],
-    inStock: true,
-  },
-  {
-    id: "4",
-    name: "Samsung 990 Pro NVMe SSD 2TB",
-    brand: "Samsung",
-    price: 159,
-    rating: 4.8,
-    specs: ["2TB capacity", "7450MB/s read", "NVMe PCIe 4.0"],
-    inStock: true,
-  },
-  {
-    id: "5",
-    name: "ASUS ROG STRIX Z790-E Gaming Motherboard",
-    brand: "ASUS",
-    price: 499,
-    rating: 4.6,
-    specs: ["LGA 1700", "DDR5", "WiFi 6E"],
-    inStock: true,
-  },
-  {
-    id: "6",
-    name: "Corsair RM1000x 1000W PSU",
-    brand: "Corsair",
-    price: 179,
-    rating: 4.8,
-    specs: ["1000W", "80+ Gold", "Fully modular"],
-    inStock: false,
-  },
-]
-
-const brands = [
-  { label: "Intel", value: "intel", count: 8 },
-  { label: "AMD", value: "amd", count: 10 },
-  { label: "NVIDIA", value: "nvidia", count: 12 },
-  { label: "Corsair", value: "corsair", count: 20 },
-  { label: "Samsung", value: "samsung", count: 15 },
-  { label: "ASUS", value: "asus", count: 18 },
-]
+interface Product {
+  id: string | number
+  name: string
+  brand: string
+  price: number
+  description?: string
+  image_url?: string
+  stock: number
+  category: string
+  subcategory?: string
+}
 
 export default function PartsPage() {
+  const [parts, setParts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState("all")
+
+  useEffect(() => {
+    const fetchParts = async () => {
+      try {
+        const response = await fetch(`/api/products?t=${Date.now()}`)
+        const products = await response.json()
+        const partsProducts = products.filter((p: Product) => p.category === "parts")
+        setParts(partsProducts)
+      } catch (error) {
+        console.error("Failed to fetch parts:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchParts()
+  }, [])
+
+  // Filter parts based on active tab
+  const filteredParts = activeTab === "all"
+    ? parts
+    : parts.filter(part => {
+        const subcategory = part.subcategory?.toLowerCase()
+        switch (activeTab) {
+          case "cpu": return subcategory?.includes("cpu")
+          case "gpu": return subcategory?.includes("gpu")
+          case "ram": return subcategory?.includes("ram")
+          case "storage": return subcategory?.includes("storage")
+          case "motherboard": return subcategory?.includes("motherboard")
+          default: return true
+        }
+      })
+
+  // Calculate brands dynamically
+  const brands = parts.reduce((acc: any[], product) => {
+    // Extract brand from name if brand field is missing
+    const brand = product.brand || product.name.split(' ')[0]
+    if (!brand) return acc
+    const brandValue = brand.toLowerCase()
+    const existingBrand = acc.find(b => b.value === brandValue)
+    if (existingBrand) {
+      existingBrand.count++
+    } else {
+      acc.push({
+        label: brand,
+        value: brandValue,
+        count: 1
+      })
+    }
+    return acc
+  }, [])
+
+  // Calculate price range
+  const prices = parts.map(p => p.price)
+  const priceRange: [number, number] = prices.length > 0 ? [Math.min(...prices), Math.max(...prices)] : [0, 2000]
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <div className="border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <h1 className="font-bold text-3xl sm:text-4xl mb-2">PC Parts</h1>
+            <p className="text-muted-foreground">Premium components for your custom build</p>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen">
       <div className="border-b border-border">
@@ -84,7 +106,7 @@ export default function PartsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Category Tabs */}
-        <Tabs defaultValue="all" className="mb-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="cpu">CPUs</TabsTrigger>
@@ -96,7 +118,7 @@ export default function PartsPage() {
         </Tabs>
 
         <div className="flex items-center justify-between mb-6">
-          <p className="text-sm text-muted-foreground">{parts.length} products</p>
+          <p className="text-sm text-muted-foreground">{filteredParts.length} products</p>
           <Button variant="outline" size="sm" className="lg:hidden bg-transparent">
             <SlidersHorizontal className="h-4 w-4 mr-2" />
             Filters
@@ -106,14 +128,24 @@ export default function PartsPage() {
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
           <aside className="hidden lg:block">
-            <ProductFilters brands={brands} priceRange={[0, 2000]} />
+            <ProductFilters brands={brands} priceRange={priceRange} />
           </aside>
 
           {/* Products Grid */}
           <div className="lg:col-span-3">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {parts.map((part) => (
-                <ProductCard key={part.id} {...part} />
+              {filteredParts.map((part) => (
+                <ProductCard
+                  key={part.id}
+                  id={String(part.id)}
+                  name={part.name}
+                  brand={part.brand || part.name.split(' ')[0]}
+                  price={part.price}
+                  rating={4.5}
+                  specs={part.description ? [part.description.substring(0, 50) + "..."] : []}
+                  inStock={part.stock > 0}
+                  image={part.image_url}
+                />
               ))}
             </div>
           </div>

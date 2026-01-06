@@ -1,0 +1,717 @@
+[
+  {
+    "id": "1",
+    "name": "ASUS ROG Swift 27\"",
+    "brand": "ASUS",
+    "description": "Premium gaming monitor with 240Hz refresh rate",
+    "price": 599.99,
+    "category": "displays",
+    "subcategory": "Gaming Monitors",
+    "image_url": "/api/uploads?f=1767554722034-asus_pg27aqn_rog_swift_27_360hz_1740601.jpg",
+    "stock": 8,
+    "specs": {
+      "resolution": "2560x1440",
+      "refresh_rate": "240Hz",
+      "panel": "IPS",
+      "response_time": "1ms"
+    },
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2026-01-04T19:25:22.537Z"
+  },
+  {
+    "id": "2",
+    "name": "LG UltraWide 34\"",
+    "brand": "LG",
+    "description": "Curved ultrawide monitor for productivity",
+    "price": 449.99,
+    "category": "displays",
+    "subcategory": "Ultrawide",
+    "image_url": "/api/uploads?f=1767554735207-LG_UltraWide_34_.jpeg",
+    "stock": 8,
+    "specs": {
+      "resolution": "3440x1440",
+      "refresh_rate": "144Hz",
+      "panel": "IPS",
+      "curve": "1800R"
+    },
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2026-01-04T19:25:35.709Z"
+  },
+  {
+    "id": "3",
+    "name": "Dell 24\" Professional",
+    "brand": "Dell",
+    "description": "Affordable professional display",
+    "price": 199.99,
+    "category": "displays",
+    "subcategory": "Office",
+    "image_url": "/api/uploads?f=1767554745909-Dell_24__Professional.jpeg",
+    "stock": 25,
+    "specs": {
+      "resolution": "1920x1080",
+      "refresh_rate": "60Hz",
+      "panel": "IPS",
+      "adjustable": true
+    },
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2026-01-04T19:25:46.412Z"
+  },
+  {
+    "id": "4",
+    "name": "Logitech MX Master 3S",
+    "brand": "Logitech",
+    "description": "Premium wireless mouse for productivity",
+    "price": 99.99,
+    "category": "peripherals",
+    "subcategory": "Mice",
+    "image_url": "/api/uploads?f=1767554810085-Logitech_MX_Master_3S.webp",
+    "stock": 30,
+    "specs": {
+      "type": "wireless",
+      "dpi": "8000",
+      "buttons": 7,
+      "battery": "70 days"
+    },
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2026-01-04T19:26:50.590Z"
+  },
+  {
+    "id": "5",
+    "name": "Keychron K8 Pro",
+    "brand": "Keychron",
+    "description": "Wireless mechanical keyboard",
+    "price": 109.99,
+    "category": "peripherals",
+    "subcategory": "Keyboards",
+    "image_url": "/api/uploads?f=1767555058309-Keychron_K8_Pro.jpeg",
+    "stock": 20,
+    "specs": {
+      "type": "mechanical",
+      "switches": "hot-swappable",
+      "layout": "TKL",
+      "wireless": true
+    },
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2026-01-04T19:30:58.811Z"
+  },
+  {
+    "id": 6,
+    "name": "HyperX Cloud II",
+    "brand": "HyperX",
+    "description": "Gaming headset with 7.1 surround sound",
+    "price": 79.99,
+    "category": "peripherals",
+    "subcategory": "Headsets",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 40,
+    "specs": {
+      "type": "wired",
+      "drivers": "53mm",
+      "surround": "7.1",
+      "mic": "detachable"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 7,
+    "name": "AMD Ryzen 9 7950X",
+    "brand": "AMD",
+    "description": "High-performance desktop processor",
+    "price": 549.99,
+    "category": "parts",
+    "subcategory": "CPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 12,
+    "specs": {
+      "cores": 16,
+      "threads": 32,
+      "base_clock": "4.5GHz",
+      "boost_clock": "5.7GHz",
+      "socket": "AM5"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 8,
+    "name": "NVIDIA RTX 4080",
+    "brand": "NVIDIA",
+    "description": "Premium graphics card for gaming and creation",
+    "price": 1199.99,
+    "category": "parts",
+    "subcategory": "GPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 5,
+    "specs": {
+      "memory": "16GB GDDR6X",
+      "boost_clock": "2.51GHz",
+      "tdp": "320W",
+      "ports": "3xDP 1xHDMI"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 9,
+    "name": "Corsair Vengeance DDR5 32GB",
+    "brand": "Corsair",
+    "description": "High-speed memory kit",
+    "price": 159.99,
+    "category": "parts",
+    "subcategory": "RAM",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 50,
+    "specs": {
+      "capacity": "32GB",
+      "speed": "6000MHz",
+      "type": "DDR5",
+      "kit": "2x16GB"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 10,
+    "name": "Samsung 990 PRO 2TB",
+    "brand": "Samsung",
+    "description": "PCIe 4.0 NVMe SSD",
+    "price": 179.99,
+    "category": "parts",
+    "subcategory": "Storage",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 35,
+    "specs": {
+      "capacity": "2TB",
+      "interface": "PCIe 4.0",
+      "read": "7450MBimages/s",
+      "write": "6900MBimages/s"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 11,
+    "name": "Intel Core i9-14900K",
+    "brand": "Intel",
+    "description": "High-performance desktop processor with 24 cores",
+    "price": 589,
+    "category": "parts",
+    "subcategory": "CPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 10,
+    "specs": {
+      "cores": 24,
+      "boost_clock": "5.8GHz",
+      "socket": "LGA1700",
+      "tdp": 125
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 12,
+    "name": "AMD Ryzen 9 7950X",
+    "brand": "AMD",
+    "description": "High-performance desktop processor with 16 cores",
+    "price": 549,
+    "category": "parts",
+    "subcategory": "CPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 8,
+    "specs": {
+      "cores": 16,
+      "boost_clock": "5.7GHz",
+      "socket": "AM5",
+      "tdp": 170
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 13,
+    "name": "Intel Core i7-14700K",
+    "description": "High-performance desktop processor with 20 cores",
+    "price": 409,
+    "category": "parts",
+    "subcategory": "CPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 12,
+    "specs": {
+      "cores": 20,
+      "boost_clock": "5.6GHz",
+      "socket": "LGA1700",
+      "tdp": 125
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 14,
+    "name": "AMD Ryzen 7 7800X3D",
+    "description": "Gaming-focused processor with 8 cores and large cache",
+    "price": 449,
+    "category": "parts",
+    "subcategory": "CPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 15,
+    "specs": {
+      "cores": 8,
+      "cache": "96MB",
+      "socket": "AM5",
+      "tdp": 120
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 15,
+    "name": "ASUS ROG STRIX Z790-E",
+    "description": "Premium motherboard with DDR5 support and WiFi 6E",
+    "price": 499,
+    "category": "parts",
+    "subcategory": "Motherboards",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 6,
+    "specs": {
+      "socket": "LGA1700",
+      "form_factor": "ATX",
+      "memory": "DDR5",
+      "wifi": "6E"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 16,
+    "name": "MSI MPG X670E",
+    "description": "High-end motherboard with PCIe 5.0 support",
+    "price": 449,
+    "category": "parts",
+    "subcategory": "Motherboards",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 8,
+    "specs": {
+      "socket": "AM5",
+      "form_factor": "ATX",
+      "memory": "DDR5",
+      "pcie": "5.0"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 17,
+    "name": "Gigabyte Z790 AORUS",
+    "description": "Feature-rich motherboard with DDR5 and WiFi 6",
+    "price": 379,
+    "category": "parts",
+    "subcategory": "Motherboards",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 10,
+    "specs": {
+      "socket": "LGA1700",
+      "form_factor": "ATX",
+      "memory": "DDR5",
+      "wifi": "6"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 18,
+    "name": "ASRock B650E Steel Legend",
+    "description": "Affordable motherboard with PCIe 5.0 support",
+    "price": 299,
+    "category": "parts",
+    "subcategory": "Motherboards",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 12,
+    "specs": {
+      "socket": "AM5",
+      "form_factor": "ATX",
+      "memory": "DDR5",
+      "pcie": "5.0"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 19,
+    "name": "RTX 4090",
+    "description": "Premium graphics card with 24GB GDDR6X memory",
+    "price": 1599,
+    "category": "parts",
+    "subcategory": "GPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 3,
+    "specs": {
+      "memory": "24GB GDDR6X",
+      "tdp": 450,
+      "ports": "3xDP, 1xHDMI"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 20,
+    "name": "RTX 4080 Super",
+    "description": "High-performance graphics card with 16GB GDDR6X memory",
+    "price": 999,
+    "category": "parts",
+    "subcategory": "GPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 5,
+    "specs": {
+      "memory": "16GB GDDR6X",
+      "tdp": 320,
+      "ports": "3xDP, 1xHDMI"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 21,
+    "name": "RX 7900 XTX",
+    "description": "AMD flagship graphics card with 24GB GDDR6 memory",
+    "price": 899,
+    "category": "parts",
+    "subcategory": "GPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 4,
+    "specs": {
+      "memory": "24GB GDDR6",
+      "tdp": 355,
+      "ports": "2xDP, 2xHDMI"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 22,
+    "name": "RTX 4070 Ti Super",
+    "description": "Mid-range graphics card with 16GB GDDR6X memory",
+    "price": 799,
+    "category": "parts",
+    "subcategory": "GPUs",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 7,
+    "specs": {
+      "memory": "16GB GDDR6X",
+      "tdp": 285,
+      "ports": "3xDP, 1xHDMI"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 23,
+    "name": "Corsair Vengeance",
+    "description": "High-performance DDR5 memory kit",
+    "price": 189,
+    "category": "parts",
+    "subcategory": "RAM",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 20,
+    "specs": {
+      "capacity": "32GB",
+      "speed": "DDR5-6000",
+      "kit": "2x16GB"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 24,
+    "name": "G.Skill Trident Z5",
+    "description": "RGB DDR5 memory kit with high speeds",
+    "price": 159,
+    "category": "parts",
+    "subcategory": "RAM",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 18,
+    "specs": {
+      "capacity": "32GB",
+      "speed": "DDR5-5600",
+      "kit": "2x16GB",
+      "rgb": true
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 25,
+    "name": "Kingston Fury Beast",
+    "description": "Affordable DDR5 memory kit",
+    "price": 139,
+    "category": "parts",
+    "subcategory": "RAM",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 25,
+    "specs": {
+      "capacity": "32GB",
+      "speed": "DDR5-5200",
+      "kit": "2x16GB"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 26,
+    "name": "Corsair Dominator",
+    "description": "Premium DDR5 memory kit with extreme speeds",
+    "price": 249,
+    "category": "parts",
+    "subcategory": "RAM",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 10,
+    "specs": {
+      "capacity": "32GB",
+      "speed": "DDR5-6400",
+      "kit": "2x16GB",
+      "rgb": true
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 27,
+    "name": "Samsung 990 Pro",
+    "description": "PCIe 4.0 NVMe SSD with exceptional speeds",
+    "price": 159,
+    "category": "parts",
+    "subcategory": "Storage",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 15,
+    "specs": {
+      "capacity": "2TB",
+      "interface": "PCIe 4.0",
+      "read_speed": "7450MBimages/s",
+      "write_speed": "6900MBimages/s"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 28,
+    "name": "WD Black SN850X",
+    "description": "High-performance NVMe SSD",
+    "price": 179,
+    "category": "parts",
+    "subcategory": "Storage",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 12,
+    "specs": {
+      "capacity": "2TB",
+      "interface": "PCIe 4.0",
+      "read_speed": "7300MBimages/s",
+      "write_speed": "6600MBimages/s"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 29,
+    "name": "Crucial T700",
+    "description": "PCIe 5.0 NVMe SSD with blazing speeds",
+    "price": 199,
+    "category": "parts",
+    "subcategory": "Storage",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 8,
+    "specs": {
+      "capacity": "2TB",
+      "interface": "PCIe 5.0",
+      "read_speed": "12400MBimages/s",
+      "write_speed": "11800MBimages/s"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 30,
+    "name": "Samsung 980 Pro",
+    "description": "Reliable PCIe 4.0 NVMe SSD",
+    "price": 129,
+    "category": "parts",
+    "subcategory": "Storage",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 20,
+    "specs": {
+      "capacity": "1TB",
+      "interface": "PCIe 4.0",
+      "read_speed": "7000MBimages/s",
+      "write_speed": "5100MBimages/s"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 31,
+    "name": "NZXT H9 Elite",
+    "description": "Premium mid-tower case with tempered glass",
+    "price": 169,
+    "category": "parts",
+    "subcategory": "Cases",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 10,
+    "specs": {
+      "form_factor": "Mid-tower",
+      "material": "Tempered glass",
+      "motherboard_support": "ATX"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 32,
+    "name": "Lian Li O11 Dynamic",
+    "description": "Dual chamber mid-tower case with excellent airflow",
+    "price": 159,
+    "category": "parts",
+    "subcategory": "Cases",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 8,
+    "specs": {
+      "form_factor": "Mid-tower",
+      "design": "Dual chamber",
+      "motherboard_support": "ATX"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 33,
+    "name": "Fractal Torrent",
+    "description": "High-airflow mid-tower case",
+    "price": 189,
+    "category": "parts",
+    "subcategory": "Cases",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 6,
+    "specs": {
+      "form_factor": "Mid-tower",
+      "airflow": "High",
+      "motherboard_support": "ATX"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 34,
+    "name": "Corsair 5000D",
+    "description": "Mid-tower case with excellent cable management",
+    "price": 149,
+    "category": "parts",
+    "subcategory": "Cases",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 12,
+    "specs": {
+      "form_factor": "Mid-tower",
+      "cable_management": "Excellent",
+      "motherboard_support": "ATX"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 35,
+    "name": "Corsair RM1000x",
+    "description": "1000W 80+ Gold modular power supply",
+    "price": 179,
+    "category": "parts",
+    "subcategory": "Power Supplies",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 15,
+    "specs": {
+      "wattage": "1000W",
+      "efficiency": "80+ Gold",
+      "modular": true
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 36,
+    "name": "Seasonic Prime TX",
+    "description": "1000W 80+ Titanium fully modular power supply",
+    "price": 249,
+    "category": "parts",
+    "subcategory": "Power Supplies",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 8,
+    "specs": {
+      "wattage": "1000W",
+      "efficiency": "80+ Titanium",
+      "modular": "Full"
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 37,
+    "name": "EVGA SuperNOVA",
+    "description": "850W 80+ Gold modular power supply",
+    "price": 159,
+    "category": "parts",
+    "subcategory": "Power Supplies",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 10,
+    "specs": {
+      "wattage": "850W",
+      "efficiency": "80+ Gold",
+      "modular": true
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 38,
+    "name": "be quiet! Dark Power",
+    "description": "850W 80+ Platinum modular power supply",
+    "price": 199,
+    "category": "parts",
+    "subcategory": "Power Supplies",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 6,
+    "specs": {
+      "wattage": "850W",
+      "efficiency": "80+ Platinum",
+      "modular": true
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 39,
+    "name": "Noctua NH-D15",
+    "description": "Dual tower CPU cooler with excellent performance",
+    "price": 109,
+    "category": "parts",
+    "subcategory": "Cooling",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 12,
+    "specs": {
+      "type": "Air",
+      "fans": "140mm",
+      "tdp": 250
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 40,
+    "name": "Corsair H150i Elite",
+    "description": "360mm AIO liquid cooler with RGB",
+    "price": 189,
+    "category": "parts",
+    "subcategory": "Cooling",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 8,
+    "specs": {
+      "type": "AIO",
+      "radiator": "360mm",
+      "rgb": true,
+      "tdp": 300
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 41,
+    "name": "Arctic Liquid Freezer II",
+    "description": "280mm AIO liquid cooler",
+    "price": 139,
+    "category": "parts",
+    "subcategory": "Cooling",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 10,
+    "specs": {
+      "type": "AIO",
+      "radiator": "280mm",
+      "tdp": 280
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": 42,
+    "name": "be quiet! Dark Rock Pro 4",
+    "description": "High-performance air cooler",
+    "price": 89,
+    "category": "parts",
+    "subcategory": "Cooling",
+    "image_url": "/placeholder.svg?height=200&width=200",
+    "stock": 15,
+    "specs": {
+      "type": "Air",
+      "height": "162mm",
+      "tdp": 250
+    },
+    "created_at": "2024-01-01T00:00:00Z"
+  }
+]

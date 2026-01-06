@@ -25,3 +25,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# uploaded assets
+public/*.jpg
+public/*.jpeg
+public/*.png
+public/*.gif
+public/uploads/
+public/assets/

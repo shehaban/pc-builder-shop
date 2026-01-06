@@ -23,24 +23,30 @@ export function ProductCard({
   brand,
   price,
   image,
-  rating = 4.5,
+  rating,
   specs = [],
-  inStock = true,
+  inStock,
 }: ProductCardProps) {
+  console.log(`ProductCard ${name}: image prop =`, image)
   const { addItem } = useCart()
 
-  const handleAddToCart = () => {
-    addItem({ id, name, brand, price, image })
+  const handleAddToCart = async () => {
+    await addItem({ id, name, brand, price, image })
   }
 
   return (
     <Card className="overflow-hidden group hover:border-primary transition-all">
       {/* Image */}
-      <div className="aspect-square bg-muted relative overflow-hidden">
+      <div className="aspect-square bg-white relative overflow-hidden flex items-center justify-center group">
         <img
-          src={image || `/placeholder.svg?height=400&width=400&query=${name}`}
+          key={`${image}-${Date.now()}`} // Force re-render and cache-bust
+          src={image ? `${image}${image.includes('?') ? '&' : '?'}v=${Date.now()}` : `/placeholder.svg?height=400&width=400&query=${name}`}
           alt={name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="max-w-full max-h-full w-auto h-auto object-contain"
+          onError={(e) => {
+            // Fallback to placeholder if image fails to load
+            e.currentTarget.src = `/placeholder.svg?height=400&width=400&query=${name}`
+          }}
         />
         {!inStock && (
           <Badge className="absolute top-2 right-2" variant="destructive">

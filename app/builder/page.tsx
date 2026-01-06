@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useCart } from "@/lib/cart-context"
+import { useRouter } from "next/navigation"
 import {
   Cpu,
   HardDrive,
@@ -246,6 +248,8 @@ const components: ComponentCategory[] = [
 
 export default function PCBuilder() {
   const [selectedComponents, setSelectedComponents] = useState<Record<string, Component>>({})
+  const { addItem } = useCart()
+  const router = useRouter()
 
   const compatibilityIssues = useMemo(() => {
     const issues: string[] = []
@@ -469,17 +473,33 @@ export default function PCBuilder() {
                     </div>
                   )}
 
-                  <Button className="w-full" size="lg" disabled={!isComplete || compatibilityIssues.length > 0}>
-                    {!isComplete
-                      ? "Select All Required Parts"
-                      : compatibilityIssues.length > 0
-                        ? "Fix Compatibility Issues"
-                        : "Complete Build"}
-                  </Button>
+                   <Button
+                     className="w-full"
+                     size="lg"
+                     disabled={!isComplete || compatibilityIssues.length > 0}
+                      onClick={async () => {
+                        await Promise.all(Object.values(selectedComponents).map(component =>
+                          addItem({
+                            id: component.id,
+                            name: component.name,
+                            brand: component.brand,
+                            price: component.price,
+                            image: component.image,
+                          })
+                        ))
+                        router.push("/")
+                      }}
+                   >
+                     {!isComplete
+                       ? "Select All Required Parts"
+                       : compatibilityIssues.length > 0
+                         ? "Fix Compatibility Issues"
+                         : "Add Build to Cart"}
+                   </Button>
 
-                  {isComplete && compatibilityIssues.length === 0 && (
-                    <div className="text-xs text-center text-muted-foreground">Build is complete and compatible!</div>
-                  )}
+                   {isComplete && compatibilityIssues.length === 0 && (
+                     <div className="text-xs text-center text-muted-foreground">Build is complete and compatible! Ready to add to cart.</div>
+                   )}
                 </div>
               </Card>
 

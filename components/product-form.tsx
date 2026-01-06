@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
 interface Product {
@@ -20,14 +19,16 @@ interface Product {
   image_url: string | null
   stock: number
   specs: Record<string, string> | null
+  created_at?: string
 }
 
 interface ProductFormProps {
   product?: Product
   category?: string
+  onSuccess?: () => void
 }
 
-export function ProductForm({ product, category }: ProductFormProps) {
+export function ProductForm({ product, category, onSuccess }: ProductFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -43,7 +44,15 @@ export function ProductForm({ product, category }: ProductFormProps) {
     specs: product?.specs || {},
   })
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
   const [specsText, setSpecsText] = useState(product?.specs ? JSON.stringify(product.specs, null, 2) : "{}")
+
+  const subcategoryOptions = {
+    displays: ["Gaming Monitors", "Ultrawide", "Office"],
+    peripherals: ["Mice", "Keyboards", "Headsets"],
+    parts: ["CPUs", "Motherboards", "GPUs", "RAM", "Storage", "Cases", "Power Supplies", "Cooling"]
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,26 +68,73 @@ export function ProductForm({ product, category }: ProductFormProps) {
         throw new Error("Invalid JSON in specs field")
       }
 
-      const supabase = createClient()
-      const productData = {
-        ...formData,
-        specs,
-        price: Number(formData.price),
-        stock: Number(formData.stock),
-      }
+      // If uploading a file, don't include image_url in the data (let API handle it)
+      const { image_url, ...productDataWithoutImage } = formData
+      const productData = selectedFile
+        ? {
+            ...productDataWithoutImage,
+            specs,
+            price: Number(formData.price),
+            stock: Number(formData.stock),
+            ...(product?.id ? { id: product.id } : { id: Date.now().toString() }),
+            created_at: product?.created_at || new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }
+        : {
+            ...formData,
+            specs,
+            price: Number(formData.price),
+            stock: Number(formData.stock),
+            ...(product?.id ? { id: product.id } : { id: Date.now().toString() }),
+            created_at: product?.created_at || new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }
 
-      if (product?.id) {
-        // Update existing product
-        const { error } = await supabase.from("products").update(productData).eq("id", product.id)
-        if (error) throw error
+      let response: Response
+
+      // If there's a file selected, use FormData
+      if (selectedFile) {
+        const formDataToSend = new FormData()
+
+        // Add all product data
+        Object.entries(productData).forEach(([key, value]) => {
+          if (value !== null && value !== undefined) {
+            formDataToSend.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value))
+          }
+        })
+
+        // Add the file
+        formDataToSend.append('image', selectedFile)
+
+        response = await fetch("/api/products", {
+          method: product?.id ? "PUT" : "POST",
+          body: formDataToSend,
+        })
       } else {
-        // Create new product
-        const { error } = await supabase.from("products").insert(productData)
-        if (error) throw error
+        // Use JSON for requests without files
+        response = await fetch("/api/products", {
+          method: product?.id ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(productData),
+        })
       }
 
-      router.push(`/admin/products/${formData.category}`)
-      router.refresh()
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to save product")
+      }
+
+      // Reset file selection on success
+      setSelectedFile(null)
+
+      if (onSuccess) {
+        // If we have an onSuccess callback (dialog mode), just call it
+        await onSuccess()
+      } else {
+        // If no callback (page mode), navigate to the category page
+        router.push(`/admin/products/${formData.category}`)
+        router.refresh()
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred")
     } finally {
@@ -120,11 +176,21 @@ export function ProductForm({ product, category }: ProductFormProps) {
 
         <div className="space-y-2">
           <Label htmlFor="subcategory">Subcategory</Label>
-          <Input
-            id="subcategory"
+          <Select
             value={formData.subcategory || ""}
-            onChange={(e) => setFormData({ ...formData, subcategory: e.target.value })}
-          />
+            onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
+          >
+            <SelectTrigger id="subcategory">
+              <SelectValue placeholder="Select subcategory" />
+            </SelectTrigger>
+            <SelectContent>
+              {(subcategoryOptions[formData.category as keyof typeof subcategoryOptions] || []).map((subcat) => (
+                <SelectItem key={subcat} value={subcat}>
+                  {subcat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">
@@ -157,6 +223,33 @@ export function ProductForm({ product, category }: ProductFormProps) {
             value={formData.image_url || ""}
             onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="image">Upload Image</Label>
+          <Input
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              setSelectedFile(file || null)
+              // Clear URL field if file is selected
+              if (file) {
+                setFormData({ ...formData, image_url: "" })
+              }
+            }}
+          />
+          {selectedFile && (
+            <p className="text-sm text-muted-foreground">
+              Selected: {selectedFile.name}
+            </p>
+          )}
+          {formData.image_url && !selectedFile && (
+            <p className="text-sm text-muted-foreground">
+              Current image: {formData.image_url}
+            </p>
+          )}
         </div>
       </div>
 
