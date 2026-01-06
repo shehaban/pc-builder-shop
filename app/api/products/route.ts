@@ -2,11 +2,26 @@ import { NextRequest, NextResponse } from "next/server"
 import fs from "fs/promises"
 import path from "path"
 import { writeFile } from "fs/promises"
+import { verifyToken } from '@/lib/auth/user-service'
+import { canAccessAdmin } from '@/lib/auth/types'
 
 export const dynamic = 'force-dynamic'
 
 const productsFile = path.join(process.cwd(), "database", "products.json")
 const uploadsDir = path.join(process.cwd(), "public")
+
+// Helper function to check admin access
+function checkAdminAccess(request: NextRequest) {
+  const authHeader = request.headers.get('authorization')
+  const token = authHeader?.replace('Bearer ', '')
+
+  if (!token) {
+    return false
+  }
+
+  const user = verifyToken(token)
+  return user && canAccessAdmin(user.role)
+}
 
 // Helper function to save uploaded file
 async function saveUploadedFile(file: File, filename: string): Promise<string> {
@@ -59,6 +74,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if user has admin access
+    const hasAccess = checkAdminAccess(request)
+    if (!hasAccess) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     let newProduct: any
 
     // Check if request has files (FormData)
@@ -128,6 +149,12 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   console.log("PUT /api/products called at", new Date().toISOString())
   try {
+    // Check if user has admin access
+    const hasAccess = checkAdminAccess(request)
+    if (!hasAccess) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     let updatedProduct: any
 
     // Check if request has files (FormData)
@@ -216,6 +243,12 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    // Check if user has admin access
+    const hasAccess = checkAdminAccess(request)
+    if (!hasAccess) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const url = new URL(request.url)
     const id = url.pathname.split('/').pop()
 

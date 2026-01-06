@@ -7,7 +7,7 @@ const usersFile = path.join(process.cwd(), "database", "users.json")
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name } = await request.json()
+    const { email, password, name, role } = await request.json()
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
@@ -32,13 +32,18 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10)
 
+    // Validate role (only allow 'user' for new signups for security)
+    const validRoles = ['user']
+    const userRole = validRoles.includes(role) ? role : 'user'
+
     // Create new user
     const newUser = {
       id: Date.now().toString(),
       email,
       password: hashedPassword,
       name,
-      is_admin: false,
+      role: userRole,
+      is_admin: userRole === 'admin', // Backward compatibility
     }
 
     users.push(newUser)

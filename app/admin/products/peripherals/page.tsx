@@ -1,11 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Plus, ShieldX } from "lucide-react"
 import Link from "next/link"
 import { ProductTable } from "@/components/product-table"
 import { ProductDialog } from "@/components/product-dialog"
+import { useAdminAccess } from "@/lib/hooks/use-admin-access"
 
 interface Product {
   id: string | number
@@ -22,6 +25,7 @@ interface Product {
 export default function PeripheralsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const { isAuthorized, checkingAccess } = useAdminAccess()
 
   const fetchProducts = async () => {
     try {
@@ -50,6 +54,40 @@ export default function PeripheralsPage() {
 
   const handleProductUpdate = async () => {
     await fetchProducts() // Re-fetch products after update
+  }
+
+  if (checkingAccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Verifying admin access...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center">
+              <ShieldX className="h-6 w-6 text-red-600 dark:text-red-400" />
+            </div>
+            <CardTitle className="text-red-600 dark:text-red-400">Access Denied</CardTitle>
+            <CardDescription>
+              You don't have permission to access the admin dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button onClick={() => router.push("/")} className="w-full">
+              Go to Home Page
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   if (loading) {

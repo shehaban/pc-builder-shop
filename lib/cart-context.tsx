@@ -28,29 +28,63 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // Load cart from API on mount
+  // Load cart from API on mount and when auth changes
   useEffect(() => {
     const loadCart = async () => {
+      setIsLoading(true)
       try {
-        const response = await fetch("/api/cart")
+        const token = localStorage.getItem('auth-token')
+        if (!token) {
+          setItems([]) // Clear cart for unauthenticated users
+          return
+        }
+
+        const response = await fetch("/api/cart", {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
         if (response.ok) {
           const cart = await response.json()
           setItems(cart)
+        } else {
+          setItems([]) // Clear cart on error
         }
       } catch (error) {
         console.error("Failed to load cart:", error)
+        setItems([]) // Clear cart on error
       } finally {
         setIsLoading(false)
       }
     }
+
     loadCart()
+
+    // Listen for auth changes
+    const handleAuthChange = () => {
+      // Clear cart immediately on auth change, then reload
+      setItems([])
+      loadCart()
+    }
+
+    window.addEventListener('authChange', handleAuthChange)
+    return () => window.removeEventListener('authChange', handleAuthChange)
   }, [])
 
   const addItem = async (item: Omit<CartItem, "quantity">) => {
     try {
+      const token = localStorage.getItem('auth-token')
+      if (!token) {
+        console.error("No auth token found")
+        return
+      }
+
       const response = await fetch("/api/cart", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ action: "add", item }),
       })
       if (response.ok) {
@@ -64,9 +98,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const removeItem = async (id: string) => {
     try {
+      const token = localStorage.getItem('auth-token')
+      if (!token) return
+
       const response = await fetch("/api/cart", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ action: "remove", id }),
       })
       if (response.ok) {
@@ -80,9 +120,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const updateQuantity = async (id: string, quantity: number) => {
     try {
+      const token = localStorage.getItem('auth-token')
+      if (!token) return
+
       const response = await fetch("/api/cart", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ action: "update", id, quantity }),
       })
       if (response.ok) {
@@ -96,9 +142,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = async () => {
     try {
+      const token = localStorage.getItem('auth-token')
+      if (!token) return
+
       const response = await fetch("/api/cart", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ action: "clear" }),
       })
       if (response.ok) {

@@ -33,14 +33,15 @@ export default function LoginPage() {
 
       if (!response.ok) throw new Error(data.error || "Login failed")
 
-      // Store user in localStorage
+      // Store user and token in localStorage
       localStorage.setItem("user", JSON.stringify(data.user))
+      localStorage.setItem("auth-token", data.token)
 
       // Dispatch auth change event
       window.dispatchEvent(new Event('authChange'))
 
-      // Redirect based on user type (assuming admin check)
-      if (data.user.is_admin) {
+      // Redirect based on user role
+      if (data.user.role === 'admin' || data.user.role === 'manager') {
         router.push("/admin")
       } else {
         router.push("/")

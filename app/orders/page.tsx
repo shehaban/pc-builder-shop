@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Package, Calendar, MapPin, Phone } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { apiRequest } from "@/lib/api-client"
 
 type Order = {
   id: string
@@ -26,7 +27,7 @@ export default function OrdersPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("/api/orders")
+        const response = await apiRequest("/api/orders")
         const data = await response.json()
 
         // Sort orders: pending first, then by newest created date

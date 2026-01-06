@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import fs from "fs/promises"
 import path from "path"
+import { verifyToken } from "@/lib/auth/user-service"
 
 const cartsFile = path.join(process.cwd(), "database", "carts.json")
+
+type UserCarts = {
+  [userId: string]: CartItem[]
+}
 
 type CartItem = {
   id: string
@@ -13,30 +18,84 @@ type CartItem = {
   image?: string
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const data = await fs.readFile(cartsFile, "utf-8")
-    const cart: CartItem[] = JSON.parse(data)
-    return NextResponse.json(cart)
+    // Check authentication
+    const authHeader = request.headers.get('authorization')
+    const token = authHeader?.replace('Bearer ', '')
+
+    if (!token) {
+      return NextResponse.json([], { status: 200 }) // Return empty cart for unauthenticated users
+    }
+
+    const user = verifyToken(token)
+    if (!user) {
+      return NextResponse.json([], { status: 200 }) // Return empty cart for invalid tokens
+    }
+
+    // Read user carts
+    let userCarts: UserCarts = {}
+    try {
+      const data = await fs.readFile(cartsFile, "utf-8")
+      const parsedData = JSON.parse(data)
+
+      // Handle migration from array format to object format
+      if (Array.isArray(parsedData)) {
+        // If it's an old array format, convert it to object format
+        userCarts = parsedData.length > 0 ? { 'legacy-user': parsedData } : {}
+      } else {
+        userCarts = parsedData
+      }
+    } catch (error) {
+      // File doesn't exist or invalid, start with empty object
+      userCarts = {}
+    }
+
+    // Return user's cart or empty array
+    const userCart = userCarts[user.id] || []
+    return NextResponse.json(userCart)
   } catch (error) {
     console.error("Cart fetch error:", error)
-    return NextResponse.json([], { status: 200 }) // Return empty cart if file doesn't exist
+    return NextResponse.json([], { status: 200 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const authHeader = request.headers.get('authorization')
+    const token = authHeader?.replace('Bearer ', '')
+
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const user = verifyToken(token)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { action, item, id, quantity } = await request.json()
 
-    // Read existing cart
-    let cart: CartItem[] = []
+    // Read existing user carts
+    let userCarts: UserCarts = {}
     try {
       const data = await fs.readFile(cartsFile, "utf-8")
-      cart = JSON.parse(data)
+      const parsedData = JSON.parse(data)
+      // Handle migration from array format to object format
+      if (Array.isArray(parsedData)) {
+        // If it's an old array format, convert it to object format
+        userCarts = parsedData.length > 0 ? { 'legacy-user': parsedData } : {}
+      } else {
+        userCarts = parsedData
+      }
     } catch (error) {
-      // File doesn't exist or empty, start with empty array
-      cart = []
+      // File doesn't exist, start with empty object
+      userCarts = {}
     }
+
+    // Get or create user's cart
+    let cart = userCarts[user.id] || []
 
     if (action === "add") {
       if (!item) {
@@ -74,8 +133,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 })
     }
 
+    // Update user's cart
+    userCarts[user.id] = cart
+
     // Write back to file
-    await fs.writeFile(cartsFile, JSON.stringify(cart, null, 2))
+    await fs.writeFile(cartsFile, JSON.stringify(userCarts, null, 2))
 
     return NextResponse.json(cart)
   } catch (error) {
@@ -86,6 +148,19 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    // Check authentication
+    const authHeader = request.headers.get('authorization')
+    const token = authHeader?.replace('Bearer ', '')
+
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const user = verifyToken(token)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { searchParams } = new URL(request.url)
     const id = searchParams.get("id")
 
@@ -93,20 +168,26 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "ID required" }, { status: 400 })
     }
 
-    // Read existing cart
-    let cart: CartItem[] = []
+    // Read existing user carts
+    let userCarts: UserCarts = {}
     try {
       const data = await fs.readFile(cartsFile, "utf-8")
-      cart = JSON.parse(data)
+      userCarts = JSON.parse(data)
     } catch (error) {
       return NextResponse.json({ error: "Cart not found" }, { status: 404 })
     }
 
+    // Get user's cart
+    let cart = userCarts[user.id] || []
+
     // Remove item
     cart = cart.filter((i) => i.id !== id)
 
+    // Update user's cart
+    userCarts[user.id] = cart
+
     // Write back to file
-    await fs.writeFile(cartsFile, JSON.stringify(cart, null, 2))
+    await fs.writeFile(cartsFile, JSON.stringify(userCarts, null, 2))
 
     return NextResponse.json(cart)
   } catch (error) {

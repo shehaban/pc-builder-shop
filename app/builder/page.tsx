@@ -477,18 +477,19 @@ export default function PCBuilder() {
                      className="w-full"
                      size="lg"
                      disabled={!isComplete || compatibilityIssues.length > 0}
-                      onClick={async () => {
-                        await Promise.all(Object.values(selectedComponents).map(component =>
-                          addItem({
-                            id: component.id,
-                            name: component.name,
-                            brand: component.brand,
-                            price: component.price,
-                            image: component.image,
-                          })
-                        ))
-                        router.push("/")
-                      }}
+                       onClick={async () => {
+                         // Add items sequentially to avoid race conditions
+                         for (const component of Object.values(selectedComponents)) {
+                           await addItem({
+                             id: component.id,
+                             name: component.name,
+                             brand: component.brand,
+                             price: component.price,
+                             image: component.image,
+                           })
+                         }
+                         router.push("/checkout")
+                       }}
                    >
                      {!isComplete
                        ? "Select All Required Parts"

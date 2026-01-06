@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useCart } from "@/lib/cart-context"
 import { ArrowLeft } from "lucide-react"
+import { apiRequest } from "@/lib/api-client"
 
 export default function CheckoutPage() {
   const [formData, setFormData] = useState({
@@ -25,9 +26,8 @@ export default function CheckoutPage() {
     setLoading(true)
 
     try {
-      const response = await fetch("/api/orders", {
+      const response = await apiRequest("/api/orders", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items,
           shipping: formData,
